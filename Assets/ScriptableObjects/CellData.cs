@@ -11,6 +11,10 @@ public class CellData : Object
     public CellData(Vector3Int coordinates)
     {
         this.coordinates = coordinates;
-
     }
+
+    public void setEnvironment(environments environment) { this.environment = environment; }
+    public void setGroundTile(TileBase tile) { this.groundTile = tile; }
+    public void setBuildingTile(TileBase tile) { this.buildingTile = tile; }
+    public void setEnvironment(TileBase tile) { this.waterTile = tile; }
 }

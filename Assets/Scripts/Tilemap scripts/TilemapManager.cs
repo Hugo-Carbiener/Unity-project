@@ -72,17 +72,13 @@ public class TilemapManager : MonoBehaviour
 
     private void Start()
     {
-        foreach(CellData cell in cells)
-        {
-            Debug.Log("name is " + cell.name);
-        }
-        //generateGroundTilemap(columns, rows);
+        generateGroundTilemap(columns, rows);
         //mergeTiles();
         //setRandomBuilding();
         //generateCastle();
         
         //-------------
-        //paintTilemap();
+        paintTilemap();
     }
 
     public void generateGroundTilemap(int columns, int rows)
@@ -119,10 +115,10 @@ public class TilemapManager : MonoBehaviour
         {
             if (cell.coordinates == coordinates)
             {
+                //Debug.Log("Found cell n°" + coordinates.x + ", " + coordinates.y);
                 return cell;
             }
         }
-        Debug.Log("did not find cell:" + coordinates.x + ", " + coordinates.y);
         return null;
     }
     public void setCellAtRandom(CellData data)
@@ -142,16 +138,16 @@ public class TilemapManager : MonoBehaviour
         }
     }
     public void setCellToPlain(CellData data) {
-        data.environment = environments.plain;
-        data.groundTile = plainTile;
+        data.setEnvironment(environments.plain);
+        data.setGroundTile(plainTile);
     }
     public void setCellToForest(CellData data) {
-        data.environment = environments.forest;
-        data.groundTile = forestTile; 
+        data.setEnvironment(environments.forest);
+        data.setGroundTile(forestTile);
     }
     public void setCellToMountain(CellData data) {
-        data.environment = environments.mountain;
-        data.groundTile = mountainTile; 
+        data.setEnvironment(environments.mountain);
+        data.setGroundTile(mountainTile);
     }
 
     public void setTileToCellDependingOnNeighbor(CellData data)
@@ -161,24 +157,27 @@ public class TilemapManager : MonoBehaviour
         float mountainNeighbors = 0;
 
         // get neighbor coordinates depending on if the tile is even or odd
-        List<Vector3Int> evenNeighboringTiles = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(-1, -1, 0), new Vector3Int(0, -1, 0), };
-        List<Vector3Int> oddNeighboringTiles = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(1, 1, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(0, -1, 0), new Vector3Int(1, -1, 0), };
-        List<Vector3Int> neighboringTiles;
+        List<Vector3Int> evenNeighborCoordinates = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(-1, -1, 0), new Vector3Int(0, -1, 0), };
+        List<Vector3Int> oddNeighborCoordinates = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(1, 1, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(0, -1, 0), new Vector3Int(1, -1, 0), };
+        List<Vector3Int> neighborCoordinates;
 
         if (data.coordinates.y % 2 == 0)
         {
-            neighboringTiles = evenNeighboringTiles;
+            neighborCoordinates = evenNeighborCoordinates;
         }
         else
         {
-            neighboringTiles = oddNeighboringTiles;
+            neighborCoordinates = oddNeighborCoordinates;
         }
-
-        foreach (Vector3Int neighbor in neighboringTiles)
-        {
+        
+        foreach (Vector3Int neighbor in neighborCoordinates)
+        {   
+           
             CellData currentCell = getCell(data.coordinates + neighbor);
-            
-            if (currentCell != null ) {
+            //Debug.Log("Neighbor is " + currentCell.environment.ToString());
+            if (currentCell != null)
+            {
+                Debug.Log("was not null");
                 if (currentCell.environment == environments.plain)
                 {
                     plainNeighbors += 1;
