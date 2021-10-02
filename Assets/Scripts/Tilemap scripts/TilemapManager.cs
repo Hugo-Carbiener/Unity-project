@@ -79,7 +79,7 @@ public class TilemapManager : MonoBehaviour
         generateGroundTilemap(columns, rows);
         mergeTiles();
         //setRandomBuilding();
-        //generateCastle();
+        generateCastle();
         
         //-------------
         paintTilemap();
@@ -259,18 +259,33 @@ public class TilemapManager : MonoBehaviour
         }
     }
 
-    /*public void generateCastle()
+    public void generateCastle()
     {
         Vector3Int center = new Vector3Int(rows/2, columns/2, 0);
-        //groundTilemap.SetTile(center, null);
+        int? centerCellIndex = getCell(center);
+        CellData centerCell = cells[(int)centerCellIndex];
+        centerCell.waterTile = waterTiles[7];
+        List<Vector3Int> neighborCoordinates;
         int i = 0;
-        foreach(Vector3Int neighbor in oddNeighborCoordinates)
+        
+
+        if (center.y % 2 == 0)
         {
-            CellData currentCell = getCell(center + neighbor);
-            i += 1;
-            currentCell.waterTile = waterTiles[0];
+            neighborCoordinates = evenNeighborCoordinates;
         }
-    }*/
+        else
+        {
+            neighborCoordinates = oddNeighborCoordinates;
+        }
+
+        foreach (Vector3Int neighbor in neighborCoordinates)
+        {
+            int? currentCellIndex = getCell(center + neighbor);
+            CellData currentCell = cells[(int)currentCellIndex];
+            i += 1;
+            currentCell.waterTile = waterTiles[i];
+        }
+    }
 
 
     /*public void setRandomBuilding()
@@ -282,6 +297,7 @@ public class TilemapManager : MonoBehaviour
     }*/
 
     public void paintTilemap()
+    // if a water tile is referred to in the CellData it will be painted and the ground/building tile ignored
     {
         foreach (CellData cell in cells)
         {
