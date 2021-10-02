@@ -77,7 +77,7 @@ public class TilemapManager : MonoBehaviour
     private void Start()
     {
         generateGroundTilemap(columns, rows);
-        //mergeTiles();
+        mergeTiles();
         //setRandomBuilding();
         //generateCastle();
         
@@ -209,34 +209,36 @@ public class TilemapManager : MonoBehaviour
         }
     }
 
-  /*  public void mergeTiles()
+    public void mergeTiles()
     {
         string tileName;
-        List<Vector3Int> neighboringTiles;
+        List<Vector3Int> neighborCoordinates;
 
         for (int x = 0; x < columns; x++)
         {
             for (int y = 0; y < rows; y++)
             {
                 Vector3Int currentPosition = new Vector3Int(x, y, 0);
-                environments currentTileEnvironment = getCell(currentPosition).environment;
-                tileName = currentTileEnvironment.ToString() + "tile";
+                int? currentCellIndex = getCell(currentPosition);
+                environments currentCellEnvironment = cells[ (int) currentCellIndex].environment;
+                tileName = currentCellEnvironment.ToString() + "tile";
 
                 // get neighbor coordinates depending on if the tile is even or odd
                 if ( y % 2 == 0)
                 {
-                    neighboringTiles = evenNeighborCoordinates;
+                    neighborCoordinates = evenNeighborCoordinates;
                 } else
                 {
-                    neighboringTiles = oddNeighborCoordinates;
+                    neighborCoordinates = oddNeighborCoordinates;
                 }
 
                 for (int i = 0; i < 6; i++)
                 {
-                    if (getCell(currentPosition + neighboringTiles[i]) != null)
+                    int? neighborCellIndex = getCell(currentPosition + neighborCoordinates[i]);
+                    if (neighborCellIndex != null)
                     {
-                        environments neighborTileEnvironment = getCell(currentPosition + neighboringTiles[i]).environment;
-                        if (currentTileEnvironment == neighborTileEnvironment)
+                        environments neighborCellEnvironment = cells[ (int) neighborCellIndex].environment;
+                        if (currentCellEnvironment == neighborCellEnvironment)
                         {
                             // if current tile and neighbor are from the same env, we add the current neighbor number (1 to 6) to the end of the tile name.
                             tileName += i + 1;
@@ -247,15 +249,15 @@ public class TilemapManager : MonoBehaviour
                 
             foreach(Tile tile in tiles)
             {
-                Debug.Log("merging : tile name is " + tile.name);
+                //Debug.Log("merging : tile name is " + tile.name);
                 if(tile.name == tileName)
                 {
-                    getCell(currentPosition).groundTile = (TileBase) tile;
+                    cells[ (int) currentCellIndex].groundTile = (TileBase) tile;
                 }
             }
             }
         }
-    }*/
+    }
 
     /*public void generateCastle()
     {
