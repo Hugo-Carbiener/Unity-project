@@ -109,14 +109,15 @@ public class TilemapManager : MonoBehaviour
     }
 
     public Tilemap getGroundTilemap() { return this.groundTilemap; }
-    public CellData getCell(Vector3Int coordinates)
+    
+    public int? getCell(Vector3Int coordinates)
     {
-        foreach(CellData cell in cells)
+        for (int i = 0; i < cells.Count; i++)
         {
-            if (cell.coordinates == coordinates)
+            if (cells[i].coordinates == coordinates)
             {
-                //Debug.Log("Found cell n°" + coordinates.x + ", " + coordinates.y);
-                return cell;
+                Debug.Log("Found cell nï¿½" + coordinates.x + ", " + coordinates.y);
+                return i;
             }
         }
         return null;
@@ -173,20 +174,19 @@ public class TilemapManager : MonoBehaviour
         foreach (Vector3Int neighbor in neighborCoordinates)
         {   
            
-            CellData currentCell = getCell(data.coordinates + neighbor);
-            //Debug.Log("Neighbor is " + currentCell.environment.ToString());
-            if (currentCell != null)
+            int? currentCellIndex = getCell(data.coordinates + neighbor);
+            if (currentCellIndex != null)
             {
                 Debug.Log("was not null");
-                if (currentCell.environment == environments.plain)
+                if (cells[ (int) currentCellIndex].environment == environments.plain)
                 {
                     plainNeighbors += 1;
                 }
-                else if (currentCell.environment == environments.forest)
+                else if (cells[ (int) currentCellIndex].environment == environments.forest)
                 {
                     forestNeighbors += 1;
                 }
-                else if (currentCell.environment == environments.mountain)
+                else if (cells[ (int) currentCellIndex].environment == environments.mountain)
                 {
                     mountainNeighbors += 1;
                 }
@@ -196,7 +196,7 @@ public class TilemapManager : MonoBehaviour
         float plainProba = (plainNeighbors + 1) / (total + 3);
         float forestProba = (forestNeighbors + 1) / (total + 3);
         float mountainProba = (mountainNeighbors + 1) / (total + 3);
-        Debug.Log(plainNeighbors + ", " + forestNeighbors + ", " + mountainNeighbors);
+        //Debug.Log(plainNeighbors + ", " + forestNeighbors + ", " + mountainNeighbors);
         double random = Random.value;
         if (random < plainProba) {
             setCellToPlain(data);
@@ -209,7 +209,7 @@ public class TilemapManager : MonoBehaviour
         }
     }
 
-    public void mergeTiles()
+    /*public void mergeTiles()
     {
         string tileName;
         List<Vector3Int> evenNeighboringTiles = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(-1, -1, 0), new Vector3Int(0, -1, 0), };
@@ -257,8 +257,8 @@ public class TilemapManager : MonoBehaviour
             }
             }
         }
-    }
-    public void generateCastle()
+    }*/
+    /*public void generateCastle()
     {
         Vector3Int center = new Vector3Int(rows/2, columns/2, 0);
         //groundTilemap.SetTile(center, null);
@@ -271,16 +271,16 @@ public class TilemapManager : MonoBehaviour
             i += 1;
             currentCell.waterTile = waterTiles[0];
         }
-    }
+    }*/
 
 
-    public void setRandomBuilding()
+    /*public void setRandomBuilding()
     {
         for (int i = 0; i < 10; i++)
         {
             getCell(new Vector3Int(Random.Range(0, rows - 1), Random.Range(0, columns - 1), 0)).buildingTile = buildingTiles[0];
         }
-    }
+    }*/
 
     public void paintTilemap()
     {
