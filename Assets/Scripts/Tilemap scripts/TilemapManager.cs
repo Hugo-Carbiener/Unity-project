@@ -78,6 +78,7 @@ public class TilemapManager : MonoBehaviour
     {
         generateGroundTilemap(columns, rows);
         mergeTiles();
+        removeIsolatedCells();
         //setRandomBuilding();
         generateCastle();
         
@@ -196,7 +197,7 @@ public class TilemapManager : MonoBehaviour
         float plainProba = (plainNeighbors + 1) / (total + 3);
         float forestProba = (forestNeighbors + 1) / (total + 3);
         float mountainProba = (mountainNeighbors + 1) / (total + 3);
-        Debug.Log(plainNeighbors + ", " + forestNeighbors + ", " + mountainNeighbors);
+        
         double random = Random.value;
         if (random < plainProba) {
             setCellToPlain(data);
@@ -208,6 +209,59 @@ public class TilemapManager : MonoBehaviour
             setCellToMountain(data);
         }
     }
+
+    public void removeIsolatedCells()
+    {
+        List<Vector3Int> neighborCoordinates;
+        Dictionary<environments, int> neighborAmount;
+        neighborAmount.put(environments.plain, 0);
+        neighborAmount.put(environments.forest, 0);
+        neighborAmount.put(environments.mountain, 0);
+
+        for (int x = 0; x < columns; x++)
+        {
+            for (int y = 0; y < rows; y++)
+            {
+                Vector3Int currentCellCoordinates = new Vector3Int(x, y, 0)
+                int? currentCellIndex = getCell(currentCellCoordinates);
+                CellData currentCell = cells[(int)currentCellIndex];
+                environments currentCellEnvironment = cells[(int)currentCellIndex].environment;
+
+                // get neighbor coordinates depending on if the tile is even or odd
+                if (y % 2 == 0)
+                {
+                    neighborCoordinates = evenNeighborCoordinates;
+                }
+                else
+                {
+                    neighborCoordinates = oddNeighborCoordinates;
+                }
+
+                foreach(Vector3Int coordinates in neighborCoordinates)
+                {
+                    int? neighborCellIndex = getCell(currentCellCoordinates + coordinates);
+                    environments neighborCellEnvironment = cells[(int)neighborCellIndex].environment;
+                    neighborAmount[neighborCellEnvironment] += 1;
+                }
+                Debug.Log("dictionnary content : " + neighborAmount[environments.plain] + ', ' + neighborAmount[environments.forest] + ', ' + neighborAmount[environments.mountain]);
+                if (neighborAmount[currentCellEnvironment] == 0) // cell is isolated
+                {
+                    environments maxValueKey = neighborAmount.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+                    
+                    if (maxValueKey == environments.plain)
+                    {
+                        setCellToPlain(currentCell);
+                    }
+                    else if (maxValueKey == environments.forest)
+                    {
+                        setCellToForest(currentCell);
+                    }
+                    else if (maxValueKey == environments.mountain)
+                    {
+                        setCellToMountain(currentCell);
+                    }
+                }
+            }
 
     public void mergeTiles()
     {
@@ -242,7 +296,6 @@ public class TilemapManager : MonoBehaviour
                         {
                             // if current tile and neighbor are from the same env, we add the current neighbor number (1 to 6) to the end of the tile name.
                             tileName += i + 1;
-                            Debug.Log(tileName);
                         }
                     }
                 }
