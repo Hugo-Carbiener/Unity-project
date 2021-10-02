@@ -32,6 +32,10 @@ public class TilemapManager : MonoBehaviour
     private Tile mountainTile;
 
     public bool activateClustering;
+
+    private List<Vector3Int> evenNeighborCoordinates = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(-1, -1, 0), new Vector3Int(0, -1, 0), };
+    private List<Vector3Int> oddNeighborCoordinates = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(1, 1, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(0, -1, 0), new Vector3Int(1, -1, 0), };
+
     private void Awake()
     {
         // create tile list
@@ -116,7 +120,6 @@ public class TilemapManager : MonoBehaviour
         {
             if (cells[i].coordinates == coordinates)
             {
-                Debug.Log("Found cell n�" + coordinates.x + ", " + coordinates.y);
                 return i;
             }
         }
@@ -158,8 +161,6 @@ public class TilemapManager : MonoBehaviour
         float mountainNeighbors = 0;
 
         // get neighbor coordinates depending on if the tile is even or odd
-        List<Vector3Int> evenNeighborCoordinates = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(-1, -1, 0), new Vector3Int(0, -1, 0), };
-        List<Vector3Int> oddNeighborCoordinates = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(1, 1, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(0, -1, 0), new Vector3Int(1, -1, 0), };
         List<Vector3Int> neighborCoordinates;
 
         if (data.coordinates.y % 2 == 0)
@@ -177,7 +178,6 @@ public class TilemapManager : MonoBehaviour
             int? currentCellIndex = getCell(data.coordinates + neighbor);
             if (currentCellIndex != null)
             {
-                Debug.Log("was not null");
                 if (cells[ (int) currentCellIndex].environment == environments.plain)
                 {
                     plainNeighbors += 1;
@@ -196,7 +196,7 @@ public class TilemapManager : MonoBehaviour
         float plainProba = (plainNeighbors + 1) / (total + 3);
         float forestProba = (forestNeighbors + 1) / (total + 3);
         float mountainProba = (mountainNeighbors + 1) / (total + 3);
-        //Debug.Log(plainNeighbors + ", " + forestNeighbors + ", " + mountainNeighbors);
+        Debug.Log(plainNeighbors + ", " + forestNeighbors + ", " + mountainNeighbors);
         double random = Random.value;
         if (random < plainProba) {
             setCellToPlain(data);
@@ -209,11 +209,9 @@ public class TilemapManager : MonoBehaviour
         }
     }
 
-    /*public void mergeTiles()
+  /*  public void mergeTiles()
     {
         string tileName;
-        List<Vector3Int> evenNeighboringTiles = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(-1, -1, 0), new Vector3Int(0, -1, 0), };
-        List<Vector3Int> oddNeighboringTiles = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(1, 1, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(0, -1, 0), new Vector3Int(1, -1, 0), };
         List<Vector3Int> neighboringTiles;
 
         for (int x = 0; x < columns; x++)
@@ -227,10 +225,10 @@ public class TilemapManager : MonoBehaviour
                 // get neighbor coordinates depending on if the tile is even or odd
                 if ( y % 2 == 0)
                 {
-                    neighboringTiles = evenNeighboringTiles;
+                    neighboringTiles = evenNeighborCoordinates;
                 } else
                 {
-                    neighboringTiles = oddNeighboringTiles;
+                    neighboringTiles = oddNeighborCoordinates;
                 }
 
                 for (int i = 0; i < 6; i++)
@@ -258,14 +256,13 @@ public class TilemapManager : MonoBehaviour
             }
         }
     }*/
+
     /*public void generateCastle()
     {
         Vector3Int center = new Vector3Int(rows/2, columns/2, 0);
         //groundTilemap.SetTile(center, null);
-        List<Vector3Int> evenNeighboringTiles = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(-1, -1, 0), new Vector3Int(0, -1, 0), };
-        List<Vector3Int> oddNeighboringTiles = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(1, 1, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(0, -1, 0), new Vector3Int(1, -1, 0), };
         int i = 0;
-        foreach(Vector3Int neighbor in oddNeighboringTiles)
+        foreach(Vector3Int neighbor in oddNeighborCoordinates)
         {
             CellData currentCell = getCell(center + neighbor);
             i += 1;
