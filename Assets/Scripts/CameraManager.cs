@@ -55,14 +55,14 @@ public class CameraManager : MonoBehaviour
 
     private void OnEnable()
     {
-        KeyboardInputManager.onMoveInput += updateFrameMove;
-        KeyboardInputManager.onZoomInput+= updateFrameZoom;
+        InputManager.onMoveInput += updateFrameMove;
+        InputManager.onZoomInput+= updateFrameZoom;
     }
 
     private void OnDisable()
     {
-        KeyboardInputManager.onMoveInput -= updateFrameMove;
-        KeyboardInputManager.onZoomInput -= updateFrameZoom;
+        InputManager.onMoveInput -= updateFrameMove;
+        InputManager.onZoomInput -= updateFrameZoom;
     }
 
     private void updateFrameMove(Vector2 moveVector)
