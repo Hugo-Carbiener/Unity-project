@@ -1,108 +1,1 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
-public class CameraManager : MonoBehaviour
-{
-    [Header("Camera positionning")]
-    public Vector2 cameraOffset = new Vector2(10f, 14f);
-
-    [Header("Move controls")]
-    public float VerticalSpeed = 50f;
-    public float lateralSpeed = 50f;
-
-    [Header("Move bounds")]
-    public Vector2 minBounds;
-    public Vector2 maxBounds;
-
-    [Header("Zoom contols")]
-    public float zoomSpeed = 300f;
-    
-    private float startingZoom;
-    private float nearZoomLimit;
-    private float farZoomLimit = 160f;
-
-    IZoomStrategy zoomStrategy;
-    Vector2 frameMove;
-    float frameZoom;
-
-    Camera cam;
-    TilemapManager tilemapManager;
-    GridLayout grid;
-
-    private void Awake()
-    {
-        // set components
-        cam = GetComponentInChildren<Camera>();
-        tilemapManager = TilemapManager.Instance;
-        grid = tilemapManager.getGroundTilemap().layoutGrid;
-
-        cam.transform.position = new Vector3(0, 0, -10f);
-
-
-        // zoom limits
-        farZoomLimit = grid.cellSize.x * (tilemapManager.rows + 10) / 2;
-        nearZoomLimit = grid.cellSize.x * 3 / 2; // when zoomed in displays 3 cells high
-        startingZoom = nearZoomLimit;
-
-        // move bounds
-        minBounds = Vector2.zero;
-        maxBounds = new Vector2(grid.cellSize.y * tilemapManager.columns * 3 / 4, grid.cellSize.x * tilemapManager.rows);
-        zoomStrategy = new OrthographicZoomStrategy(cam, startingZoom);
-    }
-
-    private void OnEnable()
-    {
-        InputManager.onMoveInput += updateFrameMove;
-        InputManager.onZoomInput+= updateFrameZoom;
-    }
-
-    private void OnDisable()
-    {
-        InputManager.onMoveInput -= updateFrameMove;
-        InputManager.onZoomInput -= updateFrameZoom;
-    }
-
-    private void updateFrameMove(Vector2 moveVector)
-    {
-        frameMove += moveVector;
-    }
-    private void updateFrameZoom(float zoomAmount)
-
-    {
-        frameZoom += zoomAmount;
-    }
-
-    private void LateUpdate()
-    {
-        if(frameMove != Vector2.zero)
-        {
-            Vector2 speedModFrameMove = new Vector2(frameMove.x * lateralSpeed, frameMove.y * VerticalSpeed);
-            transform.position += transform.TransformDirection(speedModFrameMove) * Time.deltaTime;
-            LockPositionInBounds();
-            frameMove = Vector2.zero;
-
-        }
-
-        if (frameZoom < 0f)
-        {
-            zoomStrategy.zoomIn(cam, Time.deltaTime * Mathf.Abs(frameZoom) * zoomSpeed, nearZoomLimit);
-            frameZoom = 0f;
-        } 
-        else if ( frameZoom > 0f)
-        {
-            zoomStrategy.zoomOut(cam, Time.deltaTime * frameZoom * zoomSpeed, farZoomLimit);
-            frameZoom = 0f;
-        }
-    }
-
-    private void LockPositionInBounds()
-    {
-        transform.position = new Vector2(
-            Mathf.Clamp(transform.position.x, minBounds.x, maxBounds.x),
-            Mathf.Clamp(transform.position.y, minBounds.y, maxBounds.y)
-            );
-    }
-}
+using System;using System.Collections;using System.Collections.Generic;using UnityEngine;public class CameraManager : MonoBehaviour{    [Header("Camera positionning")]    public Vector2 cameraOffset = new Vector2(10f, 14f);    [Header("Move controls")]    public float VerticalSpeed = 50f;    public float lateralSpeed = 50f;    [Header("Move bounds")]    public Vector2 minBounds;    public Vector2 maxBounds;    [Header("Zoom contols")]    public float zoomSpeed = 300f;        private float startingZoom;    private float nearZoomLimit;    private float farZoomLimit = 160f;    IZoomStrategy zoomStrategy;    Vector2 frameMove;    float frameZoom;    Camera cam;    TilemapManager tilemapManager;    GridLayout grid;    private void Awake()    {        // set components        cam = GetComponentInChildren<Camera>();        tilemapManager = TilemapManager.Instance;        grid = tilemapManager.getGroundTilemap().layoutGrid;        cam.transform.position = new Vector3(0, 0, -10f);        // zoom limits        farZoomLimit = grid.cellSize.x * (tilemapManager.rows + 10) / 2;        nearZoomLimit = grid.cellSize.x * 3 / 2; // when zoomed in displays 3 cells high        startingZoom = farZoomLimit;        // move bounds        minBounds = Vector2.zero;        maxBounds = new Vector2(grid.cellSize.y * tilemapManager.columns * 3 / 4, grid.cellSize.x * tilemapManager.rows);        zoomStrategy = new OrthographicZoomStrategy(cam, startingZoom);    }    private void OnEnable()    {        InputManager.onMoveInput += updateFrameMove;        InputManager.onZoomInput += updateFrameZoom;    }    private void OnDisable()    {        InputManager.onMoveInput -= updateFrameMove;        InputManager.onZoomInput -= updateFrameZoom;    }    private void updateFrameMove(Vector2 moveVector)    {        frameMove += moveVector;    }    private void updateFrameZoom(float zoomAmount)    {        frameZoom += zoomAmount;    }    private void LateUpdate()    {        if(frameMove != Vector2.zero)        {            Vector2 speedModFrameMove = new Vector2(frameMove.x * lateralSpeed, frameMove.y * VerticalSpeed);            transform.position += transform.TransformDirection(speedModFrameMove) * Time.deltaTime;            LockPositionInBounds();            frameMove = Vector2.zero;        }        if (frameZoom < 0f)        {            zoomStrategy.zoomIn(cam, Time.deltaTime * Mathf.Abs(frameZoom) * zoomSpeed, nearZoomLimit);            frameZoom = 0f;        }         else if ( frameZoom > 0f)        {            zoomStrategy.zoomOut(cam, Time.deltaTime * frameZoom * zoomSpeed, farZoomLimit);            frameZoom = 0f;        }    }    private void LockPositionInBounds()    {        transform.position = new Vector2(            Mathf.Clamp(transform.position.x, minBounds.x, maxBounds.x),            Mathf.Clamp(transform.position.y, minBounds.y, maxBounds.y)            );    }}

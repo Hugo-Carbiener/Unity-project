@@ -3,8 +3,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class TilemapManager : MonoBehaviour
-{
-
+{ 
     public static TilemapManager Instance { get; private set; }
 
     [SerializeField]
@@ -13,19 +12,22 @@ public class TilemapManager : MonoBehaviour
     private Tilemap buildingsTilemap;
     [SerializeField]
     private Tilemap waterTilemap;
-
-    //[SerializeField]
-    private List<TileData> tileDatas;
+    [SerializeField]
+    private Tilemap selectionTilemap;
 
     public int columns;
     public int rows;
     private List<CellData> cells = new List<CellData>();
+
+    private bool displaySelection = false;
+    private CellData selectedCell;
 
     public List<Tile> plainTiles;
     public List<Tile> forestTiles;
     public List<Tile> mountainTiles;
     public List<Tile> waterTiles;
     public List<Tile> buildingTiles;
+    public TileBase selectionTile;
     private List<Tile> tiles;
     private Tile forestTile;
     private Tile plainTile;
@@ -78,12 +80,19 @@ public class TilemapManager : MonoBehaviour
     {
         generateGroundTilemap(columns, rows);
         mergeTiles();
-        removeIsolatedCells();
-        //setRandomBuilding();
+        //removeIsolatedCells();
+        setRandomBuilding();
         generateCastle();
-        
-        //-------------
-        paintTilemap();
+
+
+
+        // --------------
+        initialPaintTilemap();
+    }
+
+    private void Update()
+    {
+        updatePaintTilemap();
     }
 
     public void generateGroundTilemap(int columns, int rows)
@@ -92,6 +101,7 @@ public class TilemapManager : MonoBehaviour
         groundTilemap.ClearAllTiles();
         buildingsTilemap.ClearAllTiles();
         waterTilemap.ClearAllTiles();
+        selectionTilemap.ClearAllTiles();
 
         for (int x = 0; x < columns; x++)
         {
@@ -114,7 +124,8 @@ public class TilemapManager : MonoBehaviour
     }
 
     public Tilemap getGroundTilemap() { return this.groundTilemap; }
-    
+    public Tilemap getSelectionTilemap() { return this.selectionTilemap; }
+
     public int? getCell(Vector3Int coordinates)
     {
         for (int i = 0; i < cells.Count; i++)
@@ -126,6 +137,19 @@ public class TilemapManager : MonoBehaviour
         }
         return null;
     }
+
+    public void SelectCell(Vector3Int coordinates)
+    {
+        displaySelection = true;
+        int? cellIndex = getCell(coordinates);
+        selectedCell = cells[(int)cellIndex];
+    }
+
+    public void reSelectCell ()
+    {
+        displaySelection = !displaySelection;
+    }
+
     public void setCellAtRandom(CellData data)
     {
         int rd = Random.Range(0, 3);
@@ -210,7 +234,7 @@ public class TilemapManager : MonoBehaviour
         }
     }
 
-    public void removeIsolatedCells()
+    /*public void removeIsolatedCells()
     {
         List<Vector3Int> neighborCoordinates;
         Dictionary<environments, int> neighborAmount;
@@ -222,7 +246,7 @@ public class TilemapManager : MonoBehaviour
         {
             for (int y = 0; y < rows; y++)
             {
-                Vector3Int currentCellCoordinates = new Vector3Int(x, y, 0)
+                Vector3Int currentCellCoordinates = new Vector3Int(x, y, 0);
                 int? currentCellIndex = getCell(currentCellCoordinates);
                 CellData currentCell = cells[(int)currentCellIndex];
                 environments currentCellEnvironment = cells[(int)currentCellIndex].environment;
@@ -261,7 +285,7 @@ public class TilemapManager : MonoBehaviour
                         setCellToMountain(currentCell);
                     }
                 }
-            }
+            }*/
 
     public void mergeTiles()
     {
@@ -341,15 +365,15 @@ public class TilemapManager : MonoBehaviour
     }
 
 
-    /*public void setRandomBuilding()
+    public void setRandomBuilding()
     {
         for (int i = 0; i < 10; i++)
         {
-            getCell(new Vector3Int(Random.Range(0, rows - 1), Random.Range(0, columns - 1), 0)).buildingTile = buildingTiles[0];
+            cells[(int)getCell(new Vector3Int(Random.Range(0, rows - 1), Random.Range(0, columns - 1), 0))].buildingTile = buildingTiles[0];
         }
-    }*/
+    }
 
-    public void paintTilemap()
+    public void initialPaintTilemap()
     // if a water tile is referred to in the CellData it will be painted and the ground/building tile ignored
     {
         foreach (CellData cell in cells)
@@ -369,8 +393,15 @@ public class TilemapManager : MonoBehaviour
             {
                 waterTilemap.SetTile(cell.coordinates, cell.waterTile);
             }
-
         }
     }
-    
+
+    public void updatePaintTilemap()
+    {
+            selectionTilemap.ClearAllTiles();
+        if(displaySelection)
+        {
+            selectionTilemap.SetTile(selectedCell.coordinates, selectionTile); 
+        }
+    }
 }

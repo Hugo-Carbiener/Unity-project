@@ -7,6 +7,7 @@ public class CellData : Object
     public TileBase groundTile = null;
     public TileBase buildingTile = null;
     public TileBase waterTile = null;
+    public bool isSelected = false;
 
     public CellData(Vector3Int coordinates)
     {

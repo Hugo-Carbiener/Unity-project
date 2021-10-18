@@ -1,6 +1,7 @@
 using UnityEngine;
 
-public class InputManager : InputManager
+
+public class InputManager : InputHandler
 {
     // Events
     public static event moveInputHandler onMoveInput;
@@ -40,7 +41,7 @@ public class InputManager : InputManager
 
         if (Input.GetMouseButtonDown(0))
         {
-            onSelectInput?.invoke(Vector3 Input.mousePosition);
+            onSelectInput?.Invoke(Input.mousePosition);
         }
     }
 }
