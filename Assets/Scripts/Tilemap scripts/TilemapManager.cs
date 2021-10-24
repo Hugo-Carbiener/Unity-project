@@ -34,6 +34,7 @@ public class TilemapManager : MonoBehaviour
     private Tile mountainTile;
 
     public bool activateClustering;
+    public bool activateIsolatedCellsRemoval;
 
     private List<Vector3Int> evenNeighborCoordinates = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(-1, -1, 0), new Vector3Int(0, -1, 0), };
     private List<Vector3Int> oddNeighborCoordinates = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(1, 1, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(0, -1, 0), new Vector3Int(1, -1, 0), };
@@ -80,7 +81,10 @@ public class TilemapManager : MonoBehaviour
     {
         generateGroundTilemap(columns, rows);
         mergeTiles();
-        //removeIsolatedCells();
+        if (activateIsolatedCellsRemoval)
+        {
+        removeIsolatedCells();
+        }
         setRandomBuilding();
         generateCastle();
 
@@ -234,18 +238,24 @@ public class TilemapManager : MonoBehaviour
         }
     }
 
-    /*public void removeIsolatedCells()
+    public void removeIsolatedCells()
     {
         List<Vector3Int> neighborCoordinates;
-        Dictionary<environments, int> neighborAmount;
-        neighborAmount.put(environments.plain, 0);
-        neighborAmount.put(environments.forest, 0);
-        neighborAmount.put(environments.mountain, 0);
 
+        // iterate on each cells
         for (int x = 0; x < columns; x++)
         {
             for (int y = 0; y < rows; y++)
             {
+                // for each cell, create a new dictionnary that states how many neighbors of each environement
+                Dictionary<environments, int> neighborAmount = new Dictionary<environments, int>();
+                foreach (environments environment in environments.GetValues(typeof(environments)))
+                {
+                    // initiate the dictionnary with every environment
+                    neighborAmount.Add(environment, 0);
+                }
+
+
                 Vector3Int currentCellCoordinates = new Vector3Int(x, y, 0);
                 int? currentCellIndex = getCell(currentCellCoordinates);
                 CellData currentCell = cells[(int)currentCellIndex];
@@ -261,31 +271,44 @@ public class TilemapManager : MonoBehaviour
                     neighborCoordinates = oddNeighborCoordinates;
                 }
 
-                foreach(Vector3Int coordinates in neighborCoordinates)
+                foreach (Vector3Int coordinates in neighborCoordinates)
                 {
                     int? neighborCellIndex = getCell(currentCellCoordinates + coordinates);
+                    if (neighborCellIndex != null)
+                    {
                     environments neighborCellEnvironment = cells[(int)neighborCellIndex].environment;
                     neighborAmount[neighborCellEnvironment] += 1;
+                    }
                 }
-                Debug.Log("dictionnary content : " + neighborAmount[environments.plain] + ', ' + neighborAmount[environments.forest] + ', ' + neighborAmount[environments.mountain]);
-                if (neighborAmount[currentCellEnvironment] == 0) // cell is isolated
+                if (neighborAmount[currentCellEnvironment] == 0) // cell is isolated we need to replace it by the environement that is the most present around the cell
                 {
-                    environments maxValueKey = neighborAmount.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
-                    
-                    if (maxValueKey == environments.plain)
+                    // get the key of the max value i.e. get the environment that is the most present around the cell
+                    KeyValuePair<environments, int> max = new KeyValuePair<environments, int>();
+                    foreach (KeyValuePair<environments, int> entry in neighborAmount)
+                    {
+                        if (entry.Value > max.Value)
+                        {
+                            max = entry;
+                        }
+                    }
+
+                    // replace the initial environment by the most present one
+                    if (max.Key == environments.plain)
                     {
                         setCellToPlain(currentCell);
                     }
-                    else if (maxValueKey == environments.forest)
+                    else if (max.Key == environments.forest)
                     {
                         setCellToForest(currentCell);
                     }
-                    else if (maxValueKey == environments.mountain)
+                    else if (max.Key == environments.mountain)
                     {
                         setCellToMountain(currentCell);
                     }
                 }
-            }*/
+            }
+        }
+    }
 
     public void mergeTiles()
     {
