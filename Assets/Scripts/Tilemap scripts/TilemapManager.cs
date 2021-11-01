@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class TilemapManager : MonoBehaviour
-{ 
+{
     public static TilemapManager Instance { get; private set; }
 
     [SerializeField]
@@ -20,7 +20,11 @@ public class TilemapManager : MonoBehaviour
     private List<CellData> cells = new List<CellData>();
 
     private bool displaySelection = false;
+    // true when a cell is selected 
+    private bool updateSelection = false;
+    // true when the value of selectedCell just changed
     private CellData selectedCell;
+    // field may be defined by previously selected cell
 
     public List<Tile> plainTiles;
     public List<Tile> forestTiles;
@@ -80,11 +84,11 @@ public class TilemapManager : MonoBehaviour
     private void Start()
     {
         generateGroundTilemap(columns, rows);
-        mergeTiles();
         if (activateIsolatedCellsRemoval)
         {
         removeIsolatedCells();
         }
+        mergeTiles();
         setRandomBuilding();
         generateCastle();
 
@@ -99,6 +103,28 @@ public class TilemapManager : MonoBehaviour
         updatePaintTilemap();
     }
 
+    // ------------------------------------------------
+    // Setters and Getters
+    // ------------------------------------------------
+    public Tilemap getGroundTilemap() { return this.groundTilemap; }
+    public Tilemap getSelectionTilemap() { return this.selectionTilemap; }
+    public int? getCell(Vector3Int coordinates)
+    {
+        for (int i = 0; i < cells.Count; i++)
+        {
+            if (cells[i].coordinates == coordinates)
+            {
+                return i;
+            }
+        }
+        return null;
+    }
+    public bool selectionIsDisplayed() { return displaySelection; }
+    public bool selectionIsUpdated() { return updateSelection; }
+    public CellData getSelectedCellData() { return selectedCell; }
+
+    // ------------------------------------------------
+    // ------------------------------------------------
     public void generateGroundTilemap(int columns, int rows)
     {
         // Start on a blank grid
@@ -126,25 +152,10 @@ public class TilemapManager : MonoBehaviour
             }
         }
     }
-
-    public Tilemap getGroundTilemap() { return this.groundTilemap; }
-    public Tilemap getSelectionTilemap() { return this.selectionTilemap; }
-
-    public int? getCell(Vector3Int coordinates)
-    {
-        for (int i = 0; i < cells.Count; i++)
-        {
-            if (cells[i].coordinates == coordinates)
-            {
-                return i;
-            }
-        }
-        return null;
-    }
-
     public void SelectCell(Vector3Int coordinates)
     {
         displaySelection = true;
+        updateSelection = true;
         int? cellIndex = getCell(coordinates);
         selectedCell = cells[(int)cellIndex];
     }
@@ -152,6 +163,7 @@ public class TilemapManager : MonoBehaviour
     public void reSelectCell ()
     {
         displaySelection = !displaySelection;
+        updateSelection = !updateSelection;
     }
 
     public void setCellAtRandom(CellData data)
