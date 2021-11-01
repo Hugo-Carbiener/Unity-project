@@ -6,13 +6,9 @@ public class TilemapManager : MonoBehaviour
 {
     public static TilemapManager Instance { get; private set; }
 
-    [SerializeField]
     private Tilemap groundTilemap;
-    [SerializeField]
     private Tilemap buildingsTilemap;
-    [SerializeField]
     private Tilemap waterTilemap;
-    [SerializeField]
     private Tilemap selectionTilemap;
 
     public int columns;
@@ -45,6 +41,12 @@ public class TilemapManager : MonoBehaviour
 
     private void Awake()
     {
+        // define tilemaps
+        GameObject child = gameObject.transform.GetChild(0).gameObject;
+        groundTilemap = child.transform.Find("GroundTilemap").GetComponent<Tilemap>();
+        buildingsTilemap = child.transform.Find("BuildingTilemap").GetComponent<Tilemap>();
+        waterTilemap = child.transform.Find("WaterTilemap").GetComponent<Tilemap>();
+        selectionTilemap = child.transform.Find("SelectionTilemap").GetComponent<Tilemap>();
         // create tile list
         tiles = new List<Tile>();
         foreach (Tile tile in plainTiles)
