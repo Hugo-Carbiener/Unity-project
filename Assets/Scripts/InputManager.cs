@@ -1,9 +1,47 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class InputManager : MonoBehaviour
+
+public class InputManager : InputHandler
 {
-    public delegate void moveInputHandler(Vector2 moveVector);
-    public delegate void zoomInputHandler(float zoomAmount);
+    // Events
+    public static event moveInputHandler onMoveInput;
+    public static event zoomInputHandler onZoomInput;
+    public static event selectionInputHandler onSelectInput;
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKey(KeyCode.Z))
+        {
+            onMoveInput?.Invoke(Vector2.up);
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            onMoveInput?.Invoke(Vector2.down);
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            onMoveInput?.Invoke(Vector2.right);
+        }
+        if (Input.GetKey(KeyCode.Q))
+        {
+            onMoveInput?.Invoke(Vector2.left);
+        }
+
+        if (Input.GetAxisRaw("Mouse ScrollWheel") > 0)
+        {
+            // mouse wheel goes up
+            onZoomInput?.Invoke(-1);
+        }
+        if (Input.GetAxisRaw("Mouse ScrollWheel") < 0)
+        {
+            // mouse wheel goes down
+            onZoomInput?.Invoke(1);
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            onSelectInput?.Invoke(Input.mousePosition);
+        }
+    }
 }

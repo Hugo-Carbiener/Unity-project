@@ -4,40 +4,49 @@ using UnityEngine.Tilemaps;
 
 public class TilemapManager : MonoBehaviour
 {
-
     public static TilemapManager Instance { get; private set; }
 
-    [SerializeField]
     private Tilemap groundTilemap;
-    [SerializeField]
     private Tilemap buildingsTilemap;
-    [SerializeField]
     private Tilemap waterTilemap;
-
-    //[SerializeField]
-    private List<TileData> tileDatas;
+    private Tilemap selectionTilemap;
 
     public int columns;
     public int rows;
     private List<CellData> cells = new List<CellData>();
+
+    private bool displaySelection = false;
+    // true when a cell is selected 
+    private bool updateSelection = false;
+    // true when the value of selectedCell just changed
+    private CellData selectedCell;
+    // field may be defined by previously selected cell
 
     public List<Tile> plainTiles;
     public List<Tile> forestTiles;
     public List<Tile> mountainTiles;
     public List<Tile> waterTiles;
     public List<Tile> buildingTiles;
+    public TileBase selectionTile;
     private List<Tile> tiles;
     private Tile forestTile;
     private Tile plainTile;
     private Tile mountainTile;
 
     public bool activateClustering;
+    public bool activateIsolatedCellsRemoval;
 
     private List<Vector3Int> evenNeighborCoordinates = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(-1, -1, 0), new Vector3Int(0, -1, 0), };
     private List<Vector3Int> oddNeighborCoordinates = new List<Vector3Int>() { new Vector3Int(1, 0, 0), new Vector3Int(1, 1, 0), new Vector3Int(0, 1, 0), new Vector3Int(-1, 0, 0), new Vector3Int(0, -1, 0), new Vector3Int(1, -1, 0), };
 
     private void Awake()
     {
+        // define tilemaps
+        GameObject child = gameObject.transform.GetChild(0).gameObject;
+        groundTilemap = child.transform.Find("GroundTilemap").GetComponent<Tilemap>();
+        buildingsTilemap = child.transform.Find("BuildingTilemap").GetComponent<Tilemap>();
+        waterTilemap = child.transform.Find("WaterTilemap").GetComponent<Tilemap>();
+        selectionTilemap = child.transform.Find("SelectionTilemap").GetComponent<Tilemap>();
         // create tile list
         tiles = new List<Tile>();
         foreach (Tile tile in plainTiles)
@@ -77,21 +86,54 @@ public class TilemapManager : MonoBehaviour
     private void Start()
     {
         generateGroundTilemap(columns, rows);
-        mergeTiles();
+        if (activateIsolatedCellsRemoval)
+        {
         removeIsolatedCells();
-        //setRandomBuilding();
+        }
+        mergeTiles();
+        setRandomBuilding();
         generateCastle();
-        
-        //-------------
-        paintTilemap();
+
+
+
+        // --------------
+        initialPaintTilemap();
     }
 
+    private void Update()
+    {
+        updatePaintTilemap();
+    }
+
+    // ------------------------------------------------
+    // Setters and Getters
+    // ------------------------------------------------
+    public Tilemap getGroundTilemap() { return this.groundTilemap; }
+    public Tilemap getSelectionTilemap() { return this.selectionTilemap; }
+    public int? getCell(Vector3Int coordinates)
+    {
+        for (int i = 0; i < cells.Count; i++)
+        {
+            if (cells[i].coordinates == coordinates)
+            {
+                return i;
+            }
+        }
+        return null;
+    }
+    public bool selectionIsDisplayed() { return displaySelection; }
+    public bool selectionIsUpdated() { return updateSelection; }
+    public CellData getSelectedCellData() { return selectedCell; }
+
+    // ------------------------------------------------
+    // ------------------------------------------------
     public void generateGroundTilemap(int columns, int rows)
     {
         // Start on a blank grid
         groundTilemap.ClearAllTiles();
         buildingsTilemap.ClearAllTiles();
         waterTilemap.ClearAllTiles();
+        selectionTilemap.ClearAllTiles();
 
         for (int x = 0; x < columns; x++)
         {
@@ -112,20 +154,20 @@ public class TilemapManager : MonoBehaviour
             }
         }
     }
-
-    public Tilemap getGroundTilemap() { return this.groundTilemap; }
-    
-    public int? getCell(Vector3Int coordinates)
+    public void SelectCell(Vector3Int coordinates)
     {
-        for (int i = 0; i < cells.Count; i++)
-        {
-            if (cells[i].coordinates == coordinates)
-            {
-                return i;
-            }
-        }
-        return null;
+        displaySelection = true;
+        updateSelection = true;
+        int? cellIndex = getCell(coordinates);
+        selectedCell = cells[(int)cellIndex];
     }
+
+    public void reSelectCell ()
+    {
+        displaySelection = !displaySelection;
+        updateSelection = !updateSelection;
+    }
+
     public void setCellAtRandom(CellData data)
     {
         int rd = Random.Range(0, 3);
@@ -213,16 +255,22 @@ public class TilemapManager : MonoBehaviour
     public void removeIsolatedCells()
     {
         List<Vector3Int> neighborCoordinates;
-        Dictionary<environments, int> neighborAmount;
-        neighborAmount.put(environments.plain, 0);
-        neighborAmount.put(environments.forest, 0);
-        neighborAmount.put(environments.mountain, 0);
 
+        // iterate on each cells
         for (int x = 0; x < columns; x++)
         {
             for (int y = 0; y < rows; y++)
             {
-                Vector3Int currentCellCoordinates = new Vector3Int(x, y, 0)
+                // for each cell, create a new dictionnary that states how many neighbors of each environement
+                Dictionary<environments, int> neighborAmount = new Dictionary<environments, int>();
+                foreach (environments environment in environments.GetValues(typeof(environments)))
+                {
+                    // initiate the dictionnary with every environment
+                    neighborAmount.Add(environment, 0);
+                }
+
+
+                Vector3Int currentCellCoordinates = new Vector3Int(x, y, 0);
                 int? currentCellIndex = getCell(currentCellCoordinates);
                 CellData currentCell = cells[(int)currentCellIndex];
                 environments currentCellEnvironment = cells[(int)currentCellIndex].environment;
@@ -237,31 +285,44 @@ public class TilemapManager : MonoBehaviour
                     neighborCoordinates = oddNeighborCoordinates;
                 }
 
-                foreach(Vector3Int coordinates in neighborCoordinates)
+                foreach (Vector3Int coordinates in neighborCoordinates)
                 {
                     int? neighborCellIndex = getCell(currentCellCoordinates + coordinates);
+                    if (neighborCellIndex != null)
+                    {
                     environments neighborCellEnvironment = cells[(int)neighborCellIndex].environment;
                     neighborAmount[neighborCellEnvironment] += 1;
+                    }
                 }
-                Debug.Log("dictionnary content : " + neighborAmount[environments.plain] + ', ' + neighborAmount[environments.forest] + ', ' + neighborAmount[environments.mountain]);
-                if (neighborAmount[currentCellEnvironment] == 0) // cell is isolated
+                if (neighborAmount[currentCellEnvironment] == 0) // cell is isolated we need to replace it by the environement that is the most present around the cell
                 {
-                    environments maxValueKey = neighborAmount.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
-                    
-                    if (maxValueKey == environments.plain)
+                    // get the key of the max value i.e. get the environment that is the most present around the cell
+                    KeyValuePair<environments, int> max = new KeyValuePair<environments, int>();
+                    foreach (KeyValuePair<environments, int> entry in neighborAmount)
+                    {
+                        if (entry.Value > max.Value)
+                        {
+                            max = entry;
+                        }
+                    }
+
+                    // replace the initial environment by the most present one
+                    if (max.Key == environments.plain)
                     {
                         setCellToPlain(currentCell);
                     }
-                    else if (maxValueKey == environments.forest)
+                    else if (max.Key == environments.forest)
                     {
                         setCellToForest(currentCell);
                     }
-                    else if (maxValueKey == environments.mountain)
+                    else if (max.Key == environments.mountain)
                     {
                         setCellToMountain(currentCell);
                     }
                 }
             }
+        }
+    }
 
     public void mergeTiles()
     {
@@ -341,15 +402,15 @@ public class TilemapManager : MonoBehaviour
     }
 
 
-    /*public void setRandomBuilding()
+    public void setRandomBuilding()
     {
         for (int i = 0; i < 10; i++)
         {
-            getCell(new Vector3Int(Random.Range(0, rows - 1), Random.Range(0, columns - 1), 0)).buildingTile = buildingTiles[0];
+            cells[(int)getCell(new Vector3Int(Random.Range(0, rows - 1), Random.Range(0, columns - 1), 0))].buildingTile = buildingTiles[0];
         }
-    }*/
+    }
 
-    public void paintTilemap()
+    public void initialPaintTilemap()
     // if a water tile is referred to in the CellData it will be painted and the ground/building tile ignored
     {
         foreach (CellData cell in cells)
@@ -369,8 +430,15 @@ public class TilemapManager : MonoBehaviour
             {
                 waterTilemap.SetTile(cell.coordinates, cell.waterTile);
             }
-
         }
     }
-    
+
+    public void updatePaintTilemap()
+    {
+            selectionTilemap.ClearAllTiles();
+        if(displaySelection)
+        {
+            selectionTilemap.SetTile(selectedCell.coordinates, selectionTile); 
+        }
+    }
 }
