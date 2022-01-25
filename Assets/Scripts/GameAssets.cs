@@ -11,7 +11,9 @@ public class GameAssets : MonoBehaviour
     {
         get
         {
-            if (!instance) instance = (Resources.Load("GameAssets") as GameObject).GetComponent<GameAssets>();
+            if (!instance) {
+                instance = (Resources.Load("GameAssets") as GameObject).GetComponent<GameAssets>();
+            } 
             return instance;
         }
     }
@@ -27,3 +29,4 @@ public class GameAssets : MonoBehaviour
     public Tile plainTile;
     public Tile mountainTile;
 }
+

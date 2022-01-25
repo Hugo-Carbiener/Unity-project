@@ -21,13 +21,6 @@ public class TilemapManager : MonoBehaviour
     // true when the value of selectedCell just changed
     private CellData selectedCell;
     // field may be defined by previously selected cell
-
-    public List<Tile> plainTiles;
-    public List<Tile> forestTiles;
-    public List<Tile> mountainTiles;
-    public List<Tile> waterTiles;
-    public List<Tile> buildingTiles;
-    public TileBase selectionTile;
     private List<Tile> tiles;
 
     public bool activateClustering;
@@ -371,7 +364,7 @@ public class TilemapManager : MonoBehaviour
         Vector3Int center = new Vector3Int(rows/2, columns/2, 0);
         int? centerCellIndex = getCell(center);
         CellData centerCell = cells[(int)centerCellIndex];
-        centerCell.waterTile = waterTiles[7];
+        centerCell.waterTile = GameAssets.i.waterTiles[7];
         List<Vector3Int> neighborCoordinates;
         int i = 0;
         
@@ -390,7 +383,7 @@ public class TilemapManager : MonoBehaviour
             int? currentCellIndex = getCell(center + neighbor);
             CellData currentCell = cells[(int)currentCellIndex];
             i += 1;
-            currentCell.waterTile = waterTiles[i];
+            currentCell.waterTile = GameAssets.i.waterTiles[i];
         }
     }
 
@@ -399,7 +392,7 @@ public class TilemapManager : MonoBehaviour
     {
         for (int i = 0; i < 10; i++)
         {
-            cells[(int)getCell(new Vector3Int(Random.Range(0, rows - 1), Random.Range(0, columns - 1), 0))].buildingTile = buildingTiles[0];
+            cells[(int)getCell(new Vector3Int(Random.Range(0, rows - 1), Random.Range(0, columns - 1), 0))].buildingTile = GameAssets.i.buildingTiles[0];
         }
     }
 
@@ -431,7 +424,7 @@ public class TilemapManager : MonoBehaviour
             selectionTilemap.ClearAllTiles();
         if(displaySelection)
         {
-            selectionTilemap.SetTile(selectedCell.coordinates, selectionTile); 
+            selectionTilemap.SetTile(selectedCell.coordinates, GameAssets.i.selectionTile); 
         }
     }
 }
