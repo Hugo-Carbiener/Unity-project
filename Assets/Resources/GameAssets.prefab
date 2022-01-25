@@ -253,7 +253,6 @@ MonoBehaviour:
   forestTile: {fileID: 11400000, guid: 3faac2c2e89726a41abe3e8e9eb7cd6d, type: 2}
   plainTile: {fileID: 11400000, guid: 445b47ae13102cb4f96a8998cce51294, type: 2}
   mountainTile: {fileID: 11400000, guid: 9db6e7bcfd0be074b9b6cf010b52e40d, type: 2}
-  groundTilemap: {fileID: 0}
-  buildingsTilemap: {fileID: 0}
-  waterTilemap: {fileID: 0}
-  selectionTilemap: {fileID: 0}
+  plainTileSprite: {fileID: 21300000, guid: b8b6d021b40f94a428fdc37394092450, type: 3}
+  forestTileSprite: {fileID: 21300000, guid: 74049dc7993f36b44a2b1391837fd139, type: 3}
+  mountainTileSprite: {fileID: 21300000, guid: a8129d7e2422d754e95ff5e90c79c80a, type: 3}

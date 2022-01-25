@@ -28,5 +28,11 @@ public class GameAssets : MonoBehaviour
     public Tile forestTile;
     public Tile plainTile;
     public Tile mountainTile;
+
+
+    [Header("Sprites")]
+    public Sprite plainTileSprite;
+    public Sprite forestTileSprite;
+    public Sprite mountainTileSprite;
 }
 
