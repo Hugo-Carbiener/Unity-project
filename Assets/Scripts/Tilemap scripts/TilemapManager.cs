@@ -29,9 +29,6 @@ public class TilemapManager : MonoBehaviour
     public List<Tile> buildingTiles;
     public TileBase selectionTile;
     private List<Tile> tiles;
-    private Tile forestTile;
-    private Tile plainTile;
-    private Tile mountainTile;
 
     public bool activateClustering;
     public bool activateIsolatedCellsRemoval;
@@ -42,30 +39,26 @@ public class TilemapManager : MonoBehaviour
     private void Awake()
     {
         // define tilemaps
-        GameObject child = gameObject.transform.GetChild(0).gameObject;
-        groundTilemap = child.transform.Find("GroundTilemap").GetComponent<Tilemap>();
-        buildingsTilemap = child.transform.Find("BuildingTilemap").GetComponent<Tilemap>();
-        waterTilemap = child.transform.Find("WaterTilemap").GetComponent<Tilemap>();
-        selectionTilemap = child.transform.Find("SelectionTilemap").GetComponent<Tilemap>();
+        Transform grid = transform.Find("Grid");
+        groundTilemap = grid.transform.Find("GroundTilemap").GetComponent<Tilemap>();
+        buildingsTilemap = grid.transform.Find("BuildingTilemap").GetComponent<Tilemap>();
+        waterTilemap = grid.transform.Find("WaterTilemap").GetComponent<Tilemap>();
+        selectionTilemap = grid.transform.Find("SelectionTilemap").GetComponent<Tilemap>();
+        
         // create tile list
         tiles = new List<Tile>();
-        foreach (Tile tile in plainTiles)
+        foreach (Tile tile in GameAssets.i.plainTiles)
         {
             tiles.Add(tile);
         }
-        foreach (Tile tile in forestTiles)
+        foreach (Tile tile in GameAssets.i.forestTiles)
         {
             tiles.Add(tile);
         }
-        foreach (Tile tile in mountainTiles)
+        foreach (Tile tile in GameAssets.i.mountainTiles)
         {
             tiles.Add(tile);
         }
-
-        // initiate main tiles
-        forestTile = forestTiles[0];
-        plainTile = plainTiles[0];
-        mountainTile = mountainTiles[0];
 
         // create instance of tilemapManager
         if (Instance == null)
@@ -186,15 +179,15 @@ public class TilemapManager : MonoBehaviour
     }
     public void setCellToPlain(CellData data) {
         data.setEnvironment(environments.plain);
-        data.setGroundTile(plainTile);
+        data.setGroundTile(GameAssets.i.plainTile);
     }
     public void setCellToForest(CellData data) {
         data.setEnvironment(environments.forest);
-        data.setGroundTile(forestTile);
+        data.setGroundTile(GameAssets.i.forestTile);
     }
     public void setCellToMountain(CellData data) {
         data.setEnvironment(environments.mountain);
-        data.setGroundTile(mountainTile);
+        data.setGroundTile(GameAssets.i.mountainTile);
     }
 
     public void setTileToCellDependingOnNeighbor(CellData data)

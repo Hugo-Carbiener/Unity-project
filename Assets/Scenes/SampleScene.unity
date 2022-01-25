@@ -1023,6 +1023,7 @@ GameObject:
   - component: {fileID: 486534014}
   - component: {fileID: 486534013}
   - component: {fileID: 486534012}
+  - component: {fileID: 486534016}
   m_Layer: 5
   m_Name: SelectionCanvas
   m_TagString: Untagged
@@ -1111,6 +1112,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &486534016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 486534011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4f912f76dc31264d9d66ecf9ded7293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tilemapManager: {fileID: 732722164}
+  plainTileSprite: {fileID: 21300000, guid: b8b6d021b40f94a428fdc37394092450, type: 3}
+  forestTileSprite: {fileID: 21300000, guid: 74049dc7993f36b44a2b1391837fd139, type: 3}
+  mountainTileSprite: {fileID: 21300000, guid: a8129d7e2422d754e95ff5e90c79c80a, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1244,10 +1261,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16e1a4cdee652554ea3a3362187c7de0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundTilemap: {fileID: 2115065894}
-  buildingsTilemap: {fileID: 463639692}
-  waterTilemap: {fileID: 899577274}
-  selectionTilemap: {fileID: 440014352}
   columns: 50
   rows: 50
   plainTiles:
@@ -3041,3 +3054,84 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1001 &4717162789768527990
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1655483970035768476, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655483970035768476, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655483970035768476, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655483970035768476, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655483970035768476, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655483970035768476, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655483970035768476, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655483970035768476, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655483970035768476, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655483970035768476, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655483970035768476, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5656554718940374722, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: plainTile
+      value: 
+      objectReference: {fileID: 11400000, guid: 445b47ae13102cb4f96a8998cce51294, type: 2}
+    - target: {fileID: 5656554718940374722, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: forestTile
+      value: 
+      objectReference: {fileID: 11400000, guid: 3faac2c2e89726a41abe3e8e9eb7cd6d, type: 2}
+    - target: {fileID: 5656554718940374722, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: mountainTile
+      value: 
+      objectReference: {fileID: 11400000, guid: 9db6e7bcfd0be074b9b6cf010b52e40d, type: 2}
+    - target: {fileID: 5656554718940374722, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: selectionTile
+      value: 
+      objectReference: {fileID: 11400000, guid: 4a0a966d4002c92429b66eb1167ede32, type: 2}
+    - target: {fileID: 5656554718940374722, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: buildingTiles.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5656554718940374722, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: buildingTiles.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 6569dad3ae47b54449f197bc15d42c4a, type: 2}
+    - target: {fileID: 6535539031342034644, guid: 26887dbbd052242438aaac1341610358, type: 3}
+      propertyPath: m_Name
+      value: GameObject
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 26887dbbd052242438aaac1341610358, type: 3}
