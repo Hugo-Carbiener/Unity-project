@@ -15,10 +15,6 @@ public class SelectionBox : MonoBehaviour
     private bool selectionIsDisplayed;
     private bool boolCheck;
 
-    [Header("Sprites")]
-    public Sprite plainTileSprite;
-    public Sprite forestTileSprite;
-    public Sprite mountainTileSprite;
 
     private void Start()
     {
@@ -73,13 +69,13 @@ public class SelectionBox : MonoBehaviour
 
         if (cellData.environment == environments.plain)
         {
-            img[1].sprite = plainTileSprite;
+            img[1].sprite = GameAssets.i.plainTileSprite;
         } else if (cellData.environment == environments.forest)
         {
-            img[1].sprite = forestTileSprite;
+            img[1].sprite = GameAssets.i.forestTileSprite;
         } else
         {
-            img[1].sprite = mountainTileSprite;
+            img[1].sprite = GameAssets.i.mountainTileSprite;
         }
     }
 }

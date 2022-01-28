@@ -21,17 +21,7 @@ public class TilemapManager : MonoBehaviour
     // true when the value of selectedCell just changed
     private CellData selectedCell;
     // field may be defined by previously selected cell
-
-    public List<Tile> plainTiles;
-    public List<Tile> forestTiles;
-    public List<Tile> mountainTiles;
-    public List<Tile> waterTiles;
-    public List<Tile> buildingTiles;
-    public TileBase selectionTile;
     private List<Tile> tiles;
-    private Tile forestTile;
-    private Tile plainTile;
-    private Tile mountainTile;
 
     public bool activateClustering;
     public bool activateIsolatedCellsRemoval;
@@ -42,30 +32,26 @@ public class TilemapManager : MonoBehaviour
     private void Awake()
     {
         // define tilemaps
-        GameObject child = gameObject.transform.GetChild(0).gameObject;
-        groundTilemap = child.transform.Find("GroundTilemap").GetComponent<Tilemap>();
-        buildingsTilemap = child.transform.Find("BuildingTilemap").GetComponent<Tilemap>();
-        waterTilemap = child.transform.Find("WaterTilemap").GetComponent<Tilemap>();
-        selectionTilemap = child.transform.Find("SelectionTilemap").GetComponent<Tilemap>();
+        Transform grid = transform.Find("Grid");
+        groundTilemap = grid.transform.Find("GroundTilemap").GetComponent<Tilemap>();
+        buildingsTilemap = grid.transform.Find("BuildingTilemap").GetComponent<Tilemap>();
+        waterTilemap = grid.transform.Find("WaterTilemap").GetComponent<Tilemap>();
+        selectionTilemap = grid.transform.Find("SelectionTilemap").GetComponent<Tilemap>();
+        
         // create tile list
         tiles = new List<Tile>();
-        foreach (Tile tile in plainTiles)
+        foreach (Tile tile in GameAssets.i.plainTiles)
         {
             tiles.Add(tile);
         }
-        foreach (Tile tile in forestTiles)
+        foreach (Tile tile in GameAssets.i.forestTiles)
         {
             tiles.Add(tile);
         }
-        foreach (Tile tile in mountainTiles)
+        foreach (Tile tile in GameAssets.i.mountainTiles)
         {
             tiles.Add(tile);
         }
-
-        // initiate main tiles
-        forestTile = forestTiles[0];
-        plainTile = plainTiles[0];
-        mountainTile = mountainTiles[0];
 
         // create instance of tilemapManager
         if (Instance == null)
@@ -186,15 +172,15 @@ public class TilemapManager : MonoBehaviour
     }
     public void setCellToPlain(CellData data) {
         data.setEnvironment(environments.plain);
-        data.setGroundTile(plainTile);
+        data.setGroundTile(GameAssets.i.plainTile);
     }
     public void setCellToForest(CellData data) {
         data.setEnvironment(environments.forest);
-        data.setGroundTile(forestTile);
+        data.setGroundTile(GameAssets.i.forestTile);
     }
     public void setCellToMountain(CellData data) {
         data.setEnvironment(environments.mountain);
-        data.setGroundTile(mountainTile);
+        data.setGroundTile(GameAssets.i.mountainTile);
     }
 
     public void setTileToCellDependingOnNeighbor(CellData data)
@@ -378,7 +364,7 @@ public class TilemapManager : MonoBehaviour
         Vector3Int center = new Vector3Int(rows/2, columns/2, 0);
         int? centerCellIndex = getCell(center);
         CellData centerCell = cells[(int)centerCellIndex];
-        centerCell.waterTile = waterTiles[7];
+        centerCell.waterTile = GameAssets.i.waterTiles[7];
         List<Vector3Int> neighborCoordinates;
         int i = 0;
         
@@ -397,7 +383,7 @@ public class TilemapManager : MonoBehaviour
             int? currentCellIndex = getCell(center + neighbor);
             CellData currentCell = cells[(int)currentCellIndex];
             i += 1;
-            currentCell.waterTile = waterTiles[i];
+            currentCell.waterTile = GameAssets.i.waterTiles[i];
         }
     }
 
@@ -406,7 +392,7 @@ public class TilemapManager : MonoBehaviour
     {
         for (int i = 0; i < 10; i++)
         {
-            cells[(int)getCell(new Vector3Int(Random.Range(0, rows - 1), Random.Range(0, columns - 1), 0))].buildingTile = buildingTiles[0];
+            cells[(int)getCell(new Vector3Int(Random.Range(0, rows - 1), Random.Range(0, columns - 1), 0))].buildingTile = GameAssets.i.buildingTiles[0];
         }
     }
 
@@ -438,7 +424,7 @@ public class TilemapManager : MonoBehaviour
             selectionTilemap.ClearAllTiles();
         if(displaySelection)
         {
-            selectionTilemap.SetTile(selectedCell.coordinates, selectionTile); 
+            selectionTilemap.SetTile(selectedCell.coordinates, GameAssets.i.selectionTile); 
         }
     }
 }
