@@ -2,44 +2,47 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
+using UnityEngine.Tilemaps;
+using System;
 
 public class RadialMenuController : MonoBehaviour
 {
-    public GameObject theMenu;
-
-    public GameObject objRed, objBlue, objGreen, objYellow;
-
-    public Vector2 moveInput;
-
-    public Text[] options;
-
-    public Color normalColor, highlightColor;
-
-    public int selectedOption;
-
+    [SerializeField] private GameObject menu;
+    [SerializeField] private GameObject[] imageContainer;
+    [SerializeField] private Tilemap selectionTilemap;
+    [SerializeField] private environments env;
+    private Vector3Int fixedPosition;
+    private Vector2 moveInput;
+    private int selectedOption;
+    private bool menuIsOpened;
+    private Camera cam;
+    
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        if(!menu) { menu = GameObject.Find("Radial Menu") as GameObject; }
+        CloseMenu();
+        cam = Camera.main;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
-            theMenu.SetActive(true);
+            menu.SetActive(true);
         }
 
-        if (theMenu.activeInHierarchy)
+        if (menu.activeInHierarchy)
         {
             moveInput.x = Input.mousePosition.x - (Screen.width / 2f);
             moveInput.y = Input.mousePosition.y - (Screen.height / 2f);
 
             moveInput.Normalize();
 
-            
+
             if (moveInput != Vector2.zero)
             {
                 float angle = Mathf.Atan2(moveInput.y, -moveInput.x) / Mathf.PI * 180;
@@ -49,23 +52,17 @@ public class RadialMenuController : MonoBehaviour
                     angle += 360;
                 }
 
-
-                Debug.Log(angle);
-                for (int i = 0; i < options.Length; i++)
+                for (int i = 0; i < imageContainer.Length; i++)
                 {
 
-                    if(angle > i * 72 && angle < (i + 1) * 72)
+                    if (angle > i * 72 && angle < (i + 1) * 72)
                     {
-                        options[i].color = highlightColor;
                         selectedOption = i;
-                    } else
-                    {
-                        options[i].color = normalColor;
                     }
                 }
             }
 
-            if(Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0))
             {
                 switch (selectedOption)
                 {
@@ -86,63 +83,41 @@ public class RadialMenuController : MonoBehaviour
 
                         break;
                 }
-                theMenu.SetActive(false);
+                CloseMenu();
             }
         }
-        
+    }
 
-        if(Input.GetKeyDown(KeyCode.Q))
+    private void FixedUpdate()
+    {
+        if (menu.activeInHierarchy)
         {
-            SwitchRed();
-        }
-
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            SwitchBlue();
-        }
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            SwitchGreen();
-        }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SwitchYellow();
-        }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            SwitchAll();
+            UpdateScale();
+            transform.position = selectionTilemap.CellToWorld(fixedPosition);
         }
     }
 
-    public void SwitchRed()
+    public void OpenMenu(Vector3Int pos)
     {
-        Debug.Log("Red");
-        objRed.SetActive(!objRed.activeInHierarchy);
+        Debug.Log("Menu opened");
+        fixedPosition = pos;
+        transform.position = selectionTilemap.CellToWorld(fixedPosition);
+        menu.SetActive(true);
+        menuIsOpened = true;
     }
 
-    public void SwitchBlue()
+    public void CloseMenu()
     {
-        objBlue.SetActive(!objBlue.activeInHierarchy);
+        Debug.Log("Menu closed");
+        menu.SetActive(false);
+        menuIsOpened = false;
     }
 
-    public void SwitchGreen()
+    private void UpdateScale()
     {
-        objGreen.SetActive(!objGreen.activeInHierarchy);
+        float factor = cam.orthographicSize * 0.032f + 0.263f;
+        transform.localScale = Vector3.one * factor;
     }
 
-    public void SwitchYellow()
-    {
-        objYellow.SetActive(!objYellow.activeInHierarchy);
-    }
-
-    public void SwitchAll()
-    {
-        SwitchRed();
-        SwitchBlue();
-        SwitchGreen();
-        SwitchYellow();
-    }
+    public bool MenuIsOpened() { return this.menuIsOpened; }
 }

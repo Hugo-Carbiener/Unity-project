@@ -203,7 +203,6 @@ public class TilemapManager : MonoBehaviour
         
         foreach (Vector3Int neighbor in neighborCoordinates)
         {   
-           
             int? currentCellIndex = getCell(data.coordinates + neighbor);
             if (currentCellIndex != null)
             {

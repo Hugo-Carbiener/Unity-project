@@ -8,30 +8,62 @@ public class TileSelectionManager : MonoBehaviour
     Vector3Int oldFrameSelect = new Vector3Int(0, 0, 0);
     Vector3Int frameSelect = new Vector3Int(0, 0, 0);
 
-    TilemapManager tilemapManager;
-    Tilemap selectionTilemap;
-    
+    [SerializeField] private TilemapManager tilemapManager;
+    [SerializeField] private Tilemap selectionTilemap;
+    [SerializeField] private RadialMenuController radialMenu;
+    private bool cellIsSelected;
+    private Camera cam;
+
+
     private void Start()
     {
+        if (!radialMenu) radialMenu = (GameObject.Find("Radial Menu Canvas") as GameObject).GetComponent<RadialMenuController>();
+
         tilemapManager = TilemapManager.Instance;
         selectionTilemap = tilemapManager.getSelectionTilemap();
         InputManager.onSelectInput += updateFrameSelect;
+        InputManager.onRightClick += SwitchMenu;
+        cellIsSelected = false;
+        cam = Camera.main;
     }
 
     private void updateFrameSelect(Vector2 mousePosition)
     {
+        if (!radialMenu.MenuIsOpened()) { 
+        // Cell cannot be unselected or reselected selected if menu is opened on a selected cell
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePosition);
         Vector3Int tilePos = selectionTilemap.WorldToCell(worldPos);
         oldFrameSelect = frameSelect;
         frameSelect = tilePos;
 
-        if (frameSelect == oldFrameSelect)
+            if (frameSelect == oldFrameSelect)
+            {
+                tilemapManager.reSelectCell();
+                cellIsSelected = false;
+            }
+            else
+            {
+                // generate newly selected cell coordinates
+                tilemapManager.SelectCell(tilePos);
+                cellIsSelected = true;
+            }
+        }
+    }
+
+    public void SwitchMenu()
+    {
+        // menu can be open and closed if a cell is selected
+        bool menuIsOpened = radialMenu.MenuIsOpened();
+        if (cellIsSelected)
         {
-            tilemapManager.reSelectCell();
-        } else
-        {
-            // generate newly selected cell coordinates
-            tilemapManager.SelectCell(tilePos);
+            if (!menuIsOpened)
+            {
+                radialMenu.OpenMenu(frameSelect);
+            }
+            else
+            {
+                radialMenu.CloseMenu();
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ public class InputManager : InputHandler
     public static event moveInputHandler onMoveInput;
     public static event zoomInputHandler onZoomInput;
     public static event selectionInputHandler onSelectInput;
+    public static event menuInputHandler onRightClick;
 
     // Update is called once per frame
     void Update()
@@ -42,6 +43,10 @@ public class InputManager : InputHandler
         if (Input.GetMouseButtonDown(0))
         {
             onSelectInput?.Invoke(Input.mousePosition);
+        }
+        if(Input.GetMouseButtonDown(1))
+        {
+            onRightClick?.Invoke();
         }
     }
 }
