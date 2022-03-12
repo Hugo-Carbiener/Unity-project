@@ -58,7 +58,8 @@ public class TileSelectionManager : MonoBehaviour
         {
             if (!menuIsOpened)
             {
-                radialMenu.OpenMenu(frameSelect);
+                environments menuEnvironment = tilemapManager.getSelectedCellData().environment;
+                radialMenu.OpenMenu(frameSelect, menuEnvironment);
             }
             else
             {
