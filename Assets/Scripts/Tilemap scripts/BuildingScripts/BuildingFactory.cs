@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,7 @@ public class BuildingFactory : MonoBehaviour
 {
     private static BuildingFactory instance;
 
-    public static BuildingFactory i
+    public static BuildingFactory Instance
     {
         get
         {
@@ -21,17 +22,18 @@ public class BuildingFactory : MonoBehaviour
 
     public enum buildings
     {
-        sawmill,
-        windmill
+        Sawmill,
+        Windmill
     }
     private Dictionary<buildings, GameObject> buildingDictionnary = new Dictionary<buildings, GameObject>();
+    public event Action updateBuildingTilemapEvent;
     private TilemapManager tilemapManager;
 
     private void Start()
     {
         tilemapManager = TilemapManager.Instance;
-        buildingDictionnary.Add(buildings.sawmill, GameAssets.i.sawmill);
-        buildingDictionnary.Add(buildings.windmill, GameAssets.i.windmill);
+        buildingDictionnary.Add(buildings.Sawmill, GameAssets.i.sawmill);
+        buildingDictionnary.Add(buildings.Windmill, GameAssets.i.windmill);
     }
 
     public void build(buildings buildingType)
@@ -43,13 +45,11 @@ public class BuildingFactory : MonoBehaviour
         building.GetComponent<Building>().setCoordinates(selectedCell.coordinates);
         foreach (Tile tile in GameAssets.i.buildingTiles)
         {
-            if (tile.name == building.ToString())
+            if (tile.name.Equals(buildingType.ToString()))
             {
                 selectedCell.setBuildingTile(tile);
-            } else
-            {
-                Debug.LogError("Building tile could not be found");
             }
-        }        
+        }
+        updateBuildingTilemapEvent.Invoke();
     }
 }

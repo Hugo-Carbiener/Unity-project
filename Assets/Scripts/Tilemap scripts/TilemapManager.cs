@@ -77,7 +77,6 @@ public class TilemapManager : MonoBehaviour
         removeIsolatedCells();
         }
         mergeTiles();
-        setRandomBuilding();
         generateCastle();
 
 
@@ -88,7 +87,7 @@ public class TilemapManager : MonoBehaviour
 
     private void Update()
     {
-        updatePaintTilemap();
+        updateSelectionTilemap();
     }
 
     // ------------------------------------------------
@@ -386,15 +385,6 @@ public class TilemapManager : MonoBehaviour
         }
     }
 
-
-    public void setRandomBuilding()
-    {
-        for (int i = 0; i < 10; i++)
-        {
-            cells[(int)getCell(new Vector3Int(Random.Range(0, rows - 1), Random.Range(0, columns - 1), 0))].buildingTile = GameAssets.i.buildingTiles[0];
-        }
-    }
-
     public void initialPaintTilemap()
     // if a water tile is referred to in the CellData it will be painted and the ground/building tile ignored
     {
@@ -418,7 +408,7 @@ public class TilemapManager : MonoBehaviour
         }
     }
 
-    public void updatePaintTilemap()
+    public void updateSelectionTilemap()
     {
         selectionTilemap.ClearAllTiles();
         if(displaySelection)
@@ -426,4 +416,6 @@ public class TilemapManager : MonoBehaviour
             selectionTilemap.SetTile(selectedCell.coordinates, GameAssets.i.selectionTile); 
         }
     }
+
+    private void 
 }
