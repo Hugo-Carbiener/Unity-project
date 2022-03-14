@@ -37,6 +37,7 @@ public class TilemapManager : MonoBehaviour
         buildingsTilemap = grid.transform.Find("BuildingTilemap").GetComponent<Tilemap>();
         waterTilemap = grid.transform.Find("WaterTilemap").GetComponent<Tilemap>();
         selectionTilemap = grid.transform.Find("SelectionTilemap").GetComponent<Tilemap>();
+        BuildingFactory.Instance.updateBuildingTilemapEvent += UpdateBuildingTilemap;
         
         // create tile list
         tiles = new List<Tile>();
@@ -417,5 +418,14 @@ public class TilemapManager : MonoBehaviour
         }
     }
 
-    private void 
+    private void UpdateBuildingTilemap()
+    {
+        foreach (CellData cell in cells)
+        {
+            if (cell.buildingTile != null)
+            {
+                buildingsTilemap.SetTile(cell.coordinates, cell.buildingTile);
+            }
+        }
+    }
 }
