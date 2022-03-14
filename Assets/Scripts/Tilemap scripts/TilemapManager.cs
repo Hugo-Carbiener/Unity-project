@@ -420,7 +420,7 @@ public class TilemapManager : MonoBehaviour
 
     public void updatePaintTilemap()
     {
-            selectionTilemap.ClearAllTiles();
+        selectionTilemap.ClearAllTiles();
         if(displaySelection)
         {
             selectionTilemap.SetTile(selectedCell.coordinates, GameAssets.i.selectionTile); 

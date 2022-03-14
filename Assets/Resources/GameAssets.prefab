@@ -248,7 +248,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 65c2cbd2d804cc847bd8fbc5548000c9, type: 2}
   - {fileID: 11400000, guid: 5db6363e361f66e4c9c7d59bd17f38f2, type: 2}
   buildingTiles:
-  - {fileID: 11400000, guid: 6569dad3ae47b54449f197bc15d42c4a, type: 2}
+  - {fileID: 11400000, guid: 70373204c18c75d438ccf831c0f7f4d4, type: 2}
+  - {fileID: 11400000, guid: e506a229e2594d9459b1b82e0af2a2ef, type: 2}
+  - {fileID: 11400000, guid: a056a98bd8189f34591a737ced16f890, type: 2}
+  - {fileID: 11400000, guid: 6b4bfb584dd381c429b8a137a1bda3ad, type: 2}
   selectionTile: {fileID: 11400000, guid: 4a0a966d4002c92429b66eb1167ede32, type: 2}
   forestTile: {fileID: 11400000, guid: 3faac2c2e89726a41abe3e8e9eb7cd6d, type: 2}
   plainTile: {fileID: 11400000, guid: 445b47ae13102cb4f96a8998cce51294, type: 2}
@@ -256,3 +259,5 @@ MonoBehaviour:
   plainTileSprite: {fileID: 21300000, guid: b8b6d021b40f94a428fdc37394092450, type: 3}
   forestTileSprite: {fileID: 21300000, guid: 74049dc7993f36b44a2b1391837fd139, type: 3}
   mountainTileSprite: {fileID: 21300000, guid: a8129d7e2422d754e95ff5e90c79c80a, type: 3}
+  sawmill: {fileID: 7051524968646291094, guid: a42fd9accbff2334a9b75cfb3314d394, type: 3}
+  windmill: {fileID: 7972927105043409058, guid: 492f938f12631bb4a9fb21a33c66541a, type: 3}

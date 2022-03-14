@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ResourceManager : MonoBehaviour
 {
@@ -18,15 +19,23 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
+    [SerializeField] private GameObject resourceCanvas;
     private int food;
     private int wood;
     private int stone;
+    private Text foodText;
+    private Text woodText;
+    private Text stoneText;
 
     private void Start()
     {
         food = 0;
         wood = 0;
         stone = 0;
+        Text[] texts = resourceCanvas.GetComponentsInChildren<Text>();
+        foodText = texts[0];
+        woodText = texts[1];
+        stoneText = texts[2];
     }
 
     public void ModifyResources(ResourceType resource, int amount)
@@ -43,6 +52,14 @@ public class ResourceManager : MonoBehaviour
                 stone += amount;
                 break;
         }
+        UpdateUI();
+    }
+
+    private void UpdateUI()
+    {
+        foodText.text = food.ToString();
+        woodText.text = wood.ToString();
+        stoneText.text = stone.ToString();
     }
 }
 

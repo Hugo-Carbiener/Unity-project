@@ -29,10 +29,13 @@ public class GameAssets : MonoBehaviour
     public Tile plainTile;
     public Tile mountainTile;
 
-
     [Header("Sprites")]
     public Sprite plainTileSprite;
     public Sprite forestTileSprite;
     public Sprite mountainTileSprite;
+
+    [Header("Buildings")]
+    public GameObject sawmill;
+    public GameObject windmill;
 }
 

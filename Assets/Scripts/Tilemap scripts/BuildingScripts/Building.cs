@@ -4,14 +4,9 @@ using UnityEngine;
 
 public class Building : MonoBehaviour
 {
-    protected BuildingFactory.BuildingType buildingType;
-    protected int level;
-    protected int capacity;
-    protected Vector2 coordinates;
+    protected Vector3Int coordinates = Vector3Int.zero;
 
-    public Building(Vector2 coordinates)
-    {
-        this.coordinates = coordinates;
-        this.level = 1;
-    }
+    public Vector3Int getCoordinates() { return this.coordinates; }
+    public void setCoordinates(Vector3Int coordinates) { this.coordinates = coordinates; }
+
 }
