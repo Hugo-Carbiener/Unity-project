@@ -38,18 +38,24 @@ public class BuildingFactory : MonoBehaviour
 
     public void build(buildings buildingType)
     {
-        // set the buildings values in the selected cell data and the coordinates in the building data
-        GameObject building = buildingDictionnary[buildingType];
         CellData selectedCell = tilemapManager.getSelectedCellData();
-        building = Instantiate(building);
-        building.GetComponent<Building>().setCoordinates(selectedCell.coordinates);
-        foreach (Tile tile in GameAssets.i.buildingTiles)
+        if (!selectedCell.buildingTile)
         {
-            if (tile.name.Equals(buildingType.ToString()))
+            // set the buildings values in the selected cell data and the coordinates in the building data if there is no building already placed
+            GameObject building = buildingDictionnary[buildingType];
+            building = Instantiate(building);
+            building.GetComponent<Building>().setCoordinates(selectedCell.coordinates);
+            foreach (Tile tile in GameAssets.i.buildingTiles)
             {
-                selectedCell.setBuildingTile(tile);
+                if (tile.name.Equals(buildingType.ToString()))
+                {
+                    selectedCell.setBuildingTile(tile);
+                }
             }
+            updateBuildingTilemapEvent.Invoke();
+        } else
+        {
+            Debug.Log("Building already existing");
         }
-        updateBuildingTilemapEvent.Invoke();
     }
 }
