@@ -33,6 +33,9 @@ public class GameAssets : MonoBehaviour
     public Sprite plainTileSprite;
     public Sprite forestTileSprite;
     public Sprite mountainTileSprite;
+    public Sprite foodIcon;
+    public Sprite woodIcon;
+    public Sprite stoneIcon;
 
     [Header("Buildings")]
     public GameObject sawmill;

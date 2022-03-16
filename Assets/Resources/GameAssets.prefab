@@ -259,5 +259,8 @@ MonoBehaviour:
   plainTileSprite: {fileID: 21300000, guid: b8b6d021b40f94a428fdc37394092450, type: 3}
   forestTileSprite: {fileID: 21300000, guid: 74049dc7993f36b44a2b1391837fd139, type: 3}
   mountainTileSprite: {fileID: 21300000, guid: a8129d7e2422d754e95ff5e90c79c80a, type: 3}
+  foodIcon: {fileID: 21300000, guid: 4157d6cfa9a9ff645bbaab975ce67f11, type: 3}
+  woodIcon: {fileID: 21300000, guid: 3fa3d8d65d16dfc4db9f31dfdcebeabe, type: 3}
+  stoneIcon: {fileID: 21300000, guid: 6663ad48827f1774c9653d609bc21e3a, type: 3}
   sawmill: {fileID: 7051524968646291094, guid: a42fd9accbff2334a9b75cfb3314d394, type: 3}
   windmill: {fileID: 7972927105043409058, guid: 492f938f12631bb4a9fb21a33c66541a, type: 3}
