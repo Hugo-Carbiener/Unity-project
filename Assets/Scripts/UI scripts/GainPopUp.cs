@@ -24,7 +24,7 @@ public class GainPopUp : MonoBehaviour
     public static GainPopUp Create(Vector3 worldPosition, int amount, ResourceType resource)
     {
         gainPopUpPrefab = Resources.Load("GainPopUp") as GameObject;
-        GameObject gainPopUpObject = Instantiate(gainPopUpPrefab, Camera.main.WorldToScreenPoint(worldPosition), Quaternion.identity);
+        GameObject gainPopUpObject = Instantiate(gainPopUpPrefab, worldPosition, Quaternion.identity);
         GainPopUp gainPopUp = gainPopUpObject.GetComponent<GainPopUp>();
         gainPopUp.Setup(amount, resource);
 
@@ -33,7 +33,6 @@ public class GainPopUp : MonoBehaviour
 
     public void Setup(int amount, ResourceType resource)
     {
-        textMesh.fontSize = 36;
         disappearTimer = 1f;
 
         switch(resource)
