@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2891426950782795992}
   - component: {fileID: 2891426950782795993}
   m_Layer: 0
-  m_Name: GainPopUp
+  m_Name: ResourcePopUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMesh: {fileID: 4319651401934527098}
-  spriteRdr: {fileID: 0}
+  spriteRdr: {fileID: 6507795093941817406}
 --- !u!1 &2891426950852747208
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,8 +249,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281307951
-  m_fontColor: {r: 0.18431373, g: 0.5764706, b: 0.18431373, a: 1}
+    rgba: 4280756158
+  m_fontColor: {r: 0.74509805, g: 0.15128501, b: 0.15294118, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

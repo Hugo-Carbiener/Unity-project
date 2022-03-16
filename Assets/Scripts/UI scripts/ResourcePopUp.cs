@@ -4,28 +4,28 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class GainPopUp : MonoBehaviour
+public class ResourcePopUp : MonoBehaviour
 {
-    private static GameObject gainPopUpPrefab;
+    private static GameObject resourcePopUpPrefab;
     [SerializeField] private TextMeshPro textMesh;
     [SerializeField] SpriteRenderer spriteRdr;
     private Color textColor;
     private Color spriteColor;
     private float disappearTimer;
+    private float moveYSpeed = 5;
 
     private void Awake()
     {
         if (!textMesh) textMesh = GetComponentInChildren<TextMeshPro>();
         if (!spriteRdr) spriteRdr = GetComponentInChildren<SpriteRenderer>();
-        textColor = textMesh.color;
         spriteColor = spriteRdr.color;
     }
 
-    public static GainPopUp Create(Vector3 worldPosition, int amount, ResourceType resource)
+    public static ResourcePopUp Create(Vector3 worldPosition, int amount, ResourceType resource)
     {
-        gainPopUpPrefab = Resources.Load("GainPopUp") as GameObject;
-        GameObject gainPopUpObject = Instantiate(gainPopUpPrefab, worldPosition, Quaternion.identity);
-        GainPopUp gainPopUp = gainPopUpObject.GetComponent<GainPopUp>();
+        resourcePopUpPrefab = Resources.Load("ResourcePopUp") as GameObject;
+        GameObject gainPopUpObject = Instantiate(resourcePopUpPrefab, worldPosition, Quaternion.identity);
+        ResourcePopUp gainPopUp = gainPopUpObject.GetComponent<ResourcePopUp>();
         gainPopUp.Setup(amount, resource);
 
         return gainPopUp;
@@ -33,7 +33,19 @@ public class GainPopUp : MonoBehaviour
 
     public void Setup(int amount, ResourceType resource)
     {
-        textMesh.text = "+" + amount;
+        if(amount >= 0)
+        {
+            textMesh.text = "+" + amount;
+            textColor = new Color(47, 147, 47);
+        }
+        else
+        {
+            textMesh.text = amount.ToString();
+            textColor = new Color(190, 39, 39);
+            moveYSpeed *= -0.5f;
+            transform.localScale *= +0.75f;
+            transform.position = transform.position + Vector3.down * 3;
+        }
         disappearTimer = 1f;
 
         switch(resource)
@@ -53,13 +65,11 @@ public class GainPopUp : MonoBehaviour
     private void Update()
     {
         disappearTimer -= Time.deltaTime;
-        float moveYSpeed = 5;
         transform.position += new Vector3(0, moveYSpeed, 0) * Time.deltaTime;
 
         if (disappearTimer < 0)
         {
             float disappearSpeed = 5f;
-            Debug.Log("sprite alpha " + spriteColor.a);
             textColor.a -= disappearSpeed * Time.deltaTime;
             spriteColor.a -= disappearSpeed * Time.deltaTime;
             textMesh.color = textColor;

@@ -19,7 +19,7 @@ public class Production : MonoBehaviour
 
     private void ProductionOrder()
     {
-        GainPopUp.Create(building.getWorldCoordinates(), amount, resource);
+        ResourcePopUp.Create(building.getWorldCoordinates(), amount, resource);
         resourceManager.ModifyResources(resource, amount);
     }
 }

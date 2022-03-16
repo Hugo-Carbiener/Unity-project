@@ -8,11 +8,14 @@ public class Building : MonoBehaviour
     private Vector3Int coordinates = Vector3Int.zero;
     private Vector3 worldCoordinates;
     private Tilemap buildingTilemap;
+    private ResourceManager resourceManager;
 
     private void Awake()
     {
         buildingTilemap = GameObject.Find("BuildingTilemap").GetComponent<Tilemap>();
         worldCoordinates = buildingTilemap.CellToWorld(coordinates);
+        resourceManager = ResourceManager.Instance;
+        InvokeRepeating("foodConsumption", 5, 2);
     }
 
     public Vector3Int getCoordinates() { return this.coordinates; }
@@ -21,4 +24,10 @@ public class Building : MonoBehaviour
         this.coordinates = cellCoordinates; 
         worldCoordinates = buildingTilemap.CellToWorld(cellCoordinates);
     } 
+
+    private void foodConsumption()
+    {
+        ResourcePopUp.Create(worldCoordinates, -1, ResourceType.Food);
+        resourceManager.ModifyResources(ResourceType.Food, -1);
+    }
 }
