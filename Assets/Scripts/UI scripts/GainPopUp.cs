@@ -33,6 +33,7 @@ public class GainPopUp : MonoBehaviour
 
     public void Setup(int amount, ResourceType resource)
     {
+        textMesh.text = "+" + amount;
         disappearTimer = 1f;
 
         switch(resource)
@@ -57,7 +58,8 @@ public class GainPopUp : MonoBehaviour
 
         if (disappearTimer < 0)
         {
-            float disappearSpeed = 20f;
+            float disappearSpeed = 5f;
+            Debug.Log("sprite alpha " + spriteColor.a);
             textColor.a -= disappearSpeed * Time.deltaTime;
             spriteColor.a -= disappearSpeed * Time.deltaTime;
             textMesh.color = textColor;

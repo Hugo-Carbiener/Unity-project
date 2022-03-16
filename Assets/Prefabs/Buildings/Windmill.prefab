@@ -57,5 +57,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resource: 2
-  amount: 1
-  cooldown: 1
+  amount: 5
+  cooldown: 5
